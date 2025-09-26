@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Godot 4.5 Mono — Run Project (Main Scene)",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "/Users/jdon/Downloads/Godot_mono.app/Contents/MacOS/Godot",
+        "args": ["--path", "${workspaceFolder}"],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "Godot 4.5 Mono — Run Demo Scene",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "/Users/jdon/Downloads/Godot_mono.app/Contents/MacOS/Godot",
+        "args": ["--path", "${workspaceFolder}", "res://demo/Demo.tscn"],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "console": "integratedTerminal"
+      }
+    ]
+  }
+  

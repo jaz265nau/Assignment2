@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://demo/Demo.gd" id="1"]
+[ext_resource type="Texture2D" path="res://icon.svg" id="2"]
+
+[node name="Demo" type="Node2D"]
+script = ExtResource("1")
+
+[node name="SpritePlus" type="SpritePlus" parent="."]
+position = Vector2(100, 240)
+texture = ExtResource("2")
+enable_bob = true
+bob_speed = 1.5
+bob_amplitude = 20.0
+enable_pulse = true
+pulse_speed = 1.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 480.0
+offset_bottom = 240.0
+
+[node name="Title" type="Label" parent="CanvasLayer/VBox"]
+text = "SpritePlus Demo"
+theme_override_font_sizes/font_size = 20
+
+[node name="Label" type="Label" parent="CanvasLayer/VBox"]
+text = "• Button toggles bob via external_ping()\n• out_of_bounds() prints when it leaves the screen"
+autowrap_mode = 2
+
+[node name="Button" type="Button" parent="CanvasLayer/VBox"]
+text = "Ping SpritePlus (toggle bob)"
+size_flags_horizontal = 3
+
+[node name="Status" type="Label" parent="CanvasLayer/VBox"]
+text = "Status: ready"
+autowrap_mode = 2

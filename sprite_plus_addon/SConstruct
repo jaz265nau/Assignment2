@@ -1,0 +1,61 @@
+# SConstruct for SpritePlus GDExtension (Godot 4.5)
+# pyright: reportUndefinedVariable=false, reportUnusedImport=false
+# mypy: ignore-errors
+# flake8: noqa
+
+from SCons.Script import DefaultEnvironment, Dir, Glob, ARGUMENTS, Mkdir
+import os
+
+env = DefaultEnvironment()
+env.Replace(CXX="clang++", LINK="clang++", SHLINK="clang++")  # ensure C++ linker is used
+
+PROJECT_ROOT = Dir('..').abspath
+GODOT_CPP_INCLUDE     = os.path.join(PROJECT_ROOT, 'godot-cpp', 'include')
+GODOT_CPP_GEN_INCLUDE = os.path.join(PROJECT_ROOT, 'godot-cpp', 'gen', 'include')
+GODOT_HEADERS_GDEXT   = os.path.join(PROJECT_ROOT, 'godot-cpp', 'gdextension')
+GODOT_CPP_LIBDIR      = os.path.join(PROJECT_ROOT, 'godot-cpp', 'bin')
+
+platform = ARGUMENTS.get('platform', 'macos')           # windows|linux|macos
+target   = ARGUMENTS.get('target',   'template_debug')  # template_debug|template_release
+
+# Absolute paths to the static archives built from godot-cpp 4.5 (universal)
+GODOT_CPP_LIB_DEBUG   = os.path.join(GODOT_CPP_LIBDIR, 'libgodot-cpp.macos.template_debug.universal.a')
+GODOT_CPP_LIB_RELEASE = os.path.join(GODOT_CPP_LIBDIR, 'libgodot-cpp.macos.template_release.universal.a')
+GODOT_CPP_LIB = GODOT_CPP_LIB_DEBUG if target == 'template_debug' else GODOT_CPP_LIB_RELEASE
+
+# Match godot-cpp’s visibility & defines
+env.Append(CPPPATH=[GODOT_CPP_INCLUDE, GODOT_CPP_GEN_INCLUDE, GODOT_HEADERS_GDEXT])
+env.Append(CXXFLAGS=[
+    '-std=c++17',
+    '-fPIC',
+    '-fvisibility=hidden',
+    '-fvisibility-inlines-hidden',
+    '-DGDEXTENSION_BUILD',
+])
+
+if platform == 'macos':
+    env.Append(LINKFLAGS=[
+        '-Wl,-undefined,dynamic_lookup',
+        '-Wl,-all_load',
+        '-Wl,-force_load', GODOT_CPP_LIB,
+        '-lc++'
+    ])
+    lib_ext = '.dylib'
+elif platform == 'linux':
+    lib_ext = '.so'
+else:
+    lib_ext = '.dll'
+
+out_dir = 'addons/sprite_plus/bin'
+env.Command(out_dir, [], Mkdir(out_dir))
+
+sources = Glob('src/*.cpp')
+
+# No 'lib' prefix on the produced shared library
+env['SHLIBPREFIX'] = ''
+
+env.SharedLibrary(
+    target=os.path.join(out_dir, f'sprite_plus.{platform}.{target}'),
+    source=sources,
+    SHLIBSUFFIX=lib_ext,
+)

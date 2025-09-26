@@ -1,0 +1,38 @@
+from SCons.Script import *
+import os
+
+env = DefaultEnvironment()
+env.Replace(CXX="clang++")
+
+PROJECT_ROOT = Dir('..').abspath
+GODOT_CPP_INCLUDE      = os.path.join(PROJECT_ROOT, 'godot-cpp', 'include')
+GODOT_CPP_GEN_INCLUDE  = os.path.join(PROJECT_ROOT, 'godot-cpp', 'gen', 'include')
+GODOT_HEADERS_GDEXT    = os.path.join(PROJECT_ROOT, 'godot-cpp', 'gdextension')
+GODOT_CPP_LIBDIR       = os.path.join(PROJECT_ROOT, 'godot-cpp', 'bin')
+
+env.Append(CPPPATH=[GODOT_CPP_INCLUDE, GODOT_CPP_GEN_INCLUDE, GODOT_HEADERS_GDEXT])
+env.Append(LIBPATH=[GODOT_CPP_LIBDIR])
+env.Append(LIBS=['godot-cpp'])
+env.Append(CXXFLAGS=['-std=c++17','-fPIC'])
+
+platform = ARGUMENTS.get('platform', 'macos')
+target   = ARGUMENTS.get('target',   'template_debug')
+
+if platform == 'windows':
+    lib_ext = '.dll'
+elif platform == 'linux':
+    lib_ext = '.so'
+else:
+    lib_ext = '.dylib'
+    env.Append(LINKFLAGS=['-Wl,-undefined,dynamic_lookup'])
+
+out_dir = 'addons/sprite_plus/bin'
+env.Command(out_dir, [], Mkdir(out_dir))
+
+sources = Glob('src/*.cpp')
+
+env.SharedLibrary(
+    target = os.path.join(out_dir, f'sprite_plus.{platform}.{target}'),
+    source = sources,
+    SHLIBSUFFIX = lib_ext
+)

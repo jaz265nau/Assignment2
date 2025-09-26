@@ -1,0 +1,11 @@
+[configuration]
+entry_symbol="sprite_plus_library_init"
+compatibility_minimum="4.5"
+
+[libraries]
+windows.debug="res://sprite_plus_addon/addons/sprite_plus/bin/sprite_plus.windows.template_debug.dll"
+windows.release="res://sprite_plus_addon/addons/sprite_plus/bin/sprite_plus.windows.template_release.dll"
+linux.debug="res://sprite_plus_addon/addons/sprite_plus/bin/sprite_plus.linux.template_debug.so"
+linux.release="res://sprite_plus_addon/addons/sprite_plus/bin/sprite_plus.linux.template_release.so"
+macos.debug="res://sprite_plus_addon/addons/sprite_plus/bin/sprite_plus.macos.template_debug.dylib"
+macos.release="res://sprite_plus_addon/addons/sprite_plus/bin/sprite_plus.macos.template_release.dylib"
